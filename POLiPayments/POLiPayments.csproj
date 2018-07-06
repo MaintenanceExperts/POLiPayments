@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Maitland Marshall</Authors>
+    <Version>0.0.1</Version>
+    <Company>Maintenance Experts</Company>
+    <Description>A c# library for working with https://www.polipayments.com/</Description>
+    <PackageProjectUrl>https://github.com/MaintenanceExperts/POLiPayments</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MaintenanceExperts/POLiPayments</RepositoryUrl>
+    <PackageTags>POLi POLiPayments</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
