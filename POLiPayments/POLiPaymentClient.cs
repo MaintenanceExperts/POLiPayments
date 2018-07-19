@@ -65,7 +65,7 @@ namespace POLiPayments
                     sw.Write(jsonPayload);
                 }
             }
-            
+
             HttpWebResponse httpResponse = await httpRequest.GetResponseAsync() as HttpWebResponse;
             string httpResponsePayload;
 

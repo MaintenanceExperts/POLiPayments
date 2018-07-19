@@ -26,5 +26,19 @@ namespace POLiPayments.Tests
 
             Assert.IsTrue(response.Success);
         }
+
+        [TestMethod]
+        public void MerchantReferenceSpecialCharactersTest()
+        {
+            InitiateTransactionRequest request = new InitiateTransactionRequest(100, "@-_=:?./abcABC123", "https://www.mex.com.au", "https://www.mex.com.au/success");
+            request.Validate();
+
+            Assert.ThrowsException<AggregateException>(() =>
+            {
+                InitiateTransactionRequest badRequest = new InitiateTransactionRequest(100, "{hello: 'hi'}", "https://www.mex.com.au", "https://www.mex.com.au/success");
+                badRequest.Validate();
+            });
+        }
+    
     }
 }

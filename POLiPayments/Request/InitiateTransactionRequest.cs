@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace POLiPayments.Request
 {
@@ -75,6 +76,9 @@ namespace POLiPayments.Request
             } else if(this.MerchantReference?.Length > 100)
             {
                 exceptions.Add(new Exception("Merchant Reference must not be longer than 100 characters."));
+            } else if(!Regex.IsMatch(this.MerchantReference, @"^[ A-Za-z0-9@\-_=:?./]*$"))
+            {
+                exceptions.Add(new Exception("Merchant Reference must only contain alphanumeric characters and the following special characters: @-_=:?./"));
             }
 
             if(this.MerchantReferenceFormat?.Length > 50)
@@ -117,6 +121,8 @@ namespace POLiPayments.Request
             {
                 exceptions.Add(new Exception("Notification URL must not be longer than 1000 characters."));
             }
+
+            
 
             if(exceptions.Count > 0)
             {
