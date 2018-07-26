@@ -105,26 +105,69 @@ namespace POLiPayments.Request
             } else if(this.SuccessURL?.Length > 1000)
             {
                 exceptions.Add(new Exception("Success URL must not be longer than 1000 characters."));
+            } else
+            {
+                Uri successUrl;
+                if(Uri.TryCreate(this.SuccessURL, UriKind.Absolute, out successUrl))
+                {
+                    this.SuccessURL = successUrl.ToString();
+                } else
+                {
+                    exceptions.Add(new Exception("Success URL is malformed"));
+                }
+                
             }
 
             if (this.FailureURL?.Length > 1000)
             {
                 exceptions.Add(new Exception("Failure URL must not be longer than 1000 characters."));
+            } else if(!String.IsNullOrEmpty(this.FailureURL))
+            {
+                Uri failureUrl;
+                if (Uri.TryCreate(this.FailureURL, UriKind.Absolute, out failureUrl))
+                {
+                    this.FailureURL = failureUrl.ToString();
+                }
+                else
+                {
+                    exceptions.Add(new Exception("Failure URL is malformed"));
+                }
             }
 
             if (this.CancellationURL?.Length > 1000)
             {
                 exceptions.Add(new Exception("Cancellation URL must not be longer than 1000 characters."));
+            } else if (!String.IsNullOrEmpty(this.CancellationURL))
+            {
+                Uri cancellationUrl;
+                if (Uri.TryCreate(this.CancellationURL, UriKind.Absolute, out cancellationUrl))
+                {
+                    this.CancellationURL = cancellationUrl.ToString();
+                }
+                else
+                {
+                    exceptions.Add(new Exception("Cancellation URL is malformed"));
+                }
             }
 
-            if(this.NotificationURL?.Length > 1000)
+            if (this.NotificationURL?.Length > 1000)
             {
                 exceptions.Add(new Exception("Notification URL must not be longer than 1000 characters."));
+            } else if (!String.IsNullOrEmpty(this.NotificationURL))
+            {
+                Uri notificationUrl;
+                if (Uri.TryCreate(this.NotificationURL, UriKind.Absolute, out notificationUrl))
+                {
+                    this.NotificationURL = notificationUrl.ToString();
+                }
+                else
+                {
+                    exceptions.Add(new Exception("Notification URL is malformed"));
+                }
             }
 
-            
 
-            if(exceptions.Count > 0)
+            if (exceptions.Count > 0)
             {
                 throw new AggregateException(exceptions);
             }
