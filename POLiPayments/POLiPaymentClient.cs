@@ -66,16 +66,27 @@ namespace POLiPayments
                 }
             }
 
-            HttpWebResponse httpResponse = await httpRequest.GetResponseAsync() as HttpWebResponse;
-            string httpResponsePayload;
-
-            using (Stream httpResponseStream = httpResponse.GetResponseStream())
-            using (StreamReader sr = new StreamReader(httpResponseStream))
+            try
             {
-                httpResponsePayload = await sr.ReadToEndAsync();
-            }
+                HttpWebResponse httpResponse = await httpRequest.GetResponseAsync() as HttpWebResponse;
+                string httpResponsePayload;
 
-            return JsonConvert.DeserializeObject<Response>(httpResponsePayload);
+                using (Stream httpResponseStream = httpResponse.GetResponseStream())
+                using (StreamReader sr = new StreamReader(httpResponseStream))
+                {
+                    httpResponsePayload = await sr.ReadToEndAsync();
+                }
+
+                return JsonConvert.DeserializeObject<Response>(httpResponsePayload);
+            } catch(WebException ex)
+            {
+                WebResponse exceptionResponse = ex.Response;
+                using (Stream exceptionResponseStream = exceptionResponse.GetResponseStream())
+                using (StreamReader sr = new StreamReader(exceptionResponseStream))
+                {
+                    throw new Exception(await sr.ReadToEndAsync(), ex);
+                }
+            }
         }
     }
 }
