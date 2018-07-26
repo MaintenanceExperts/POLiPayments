@@ -66,26 +66,43 @@ namespace POLiPayments
                 }
             }
 
+            string httpResponsePayload;
+            WebException webException = null;
             try
             {
                 HttpWebResponse httpResponse = await httpRequest.GetResponseAsync() as HttpWebResponse;
-                string httpResponsePayload;
-
+                
                 using (Stream httpResponseStream = httpResponse.GetResponseStream())
                 using (StreamReader sr = new StreamReader(httpResponseStream))
                 {
                     httpResponsePayload = await sr.ReadToEndAsync();
                 }
-
-                return JsonConvert.DeserializeObject<Response>(httpResponsePayload);
             } catch(WebException ex)
             {
                 WebResponse exceptionResponse = ex.Response;
+                webException = ex;
                 using (Stream exceptionResponseStream = exceptionResponse.GetResponseStream())
                 using (StreamReader sr = new StreamReader(exceptionResponseStream))
                 {
-                    throw new Exception(await sr.ReadToEndAsync(), ex);
+                    // try to parse the exception payload, as the API should throw an error code, but still return the same type of JSON, with {success: false} and an error message
+                    httpResponsePayload = await sr.ReadToEndAsync();
                 }
+            } catch(Exception)
+            {
+                throw;
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<Response>(httpResponsePayload);
+            } catch(Exception)
+            {
+                if(webException != null)
+                {
+                    throw new Exception(httpResponsePayload, webException);
+                }
+
+                throw;
             }
         }
     }
